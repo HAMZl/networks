@@ -3,17 +3,18 @@ import java.net.*;
 
 public class Client 
 {
-	public void connect() {
+	public void connect(String request) {
 
         try {
-
-            // Try and create the socket. The server is assumed to be running on the same host ('localhost'),
-            // so first run 'KnockKnockServer' in another shell.
             Socket s = new Socket( "localhost", 6001 );
-
+			PrintWriter writer = new PrintWriter(s.getOutputStream(), true);
+			writer.println(request);
             BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream() ) );
-            String advice = reader.readLine();
-            System.out.println(advice);
+            String serverOutput = reader.readLine();
+			while(serverOutput != null){
+				System.out.println(serverOutput);
+				serverOutput = reader.readLine();
+			}
             reader.close();
             s.close();
         }
@@ -24,6 +25,20 @@ public class Client
     }
 	public static void main( String[] args ){
 		Client client = new Client();
-        client.connect();
+		if(args.length == 0 || args.length > 3){
+			System.out.println("Invalid number of arguments.");
+			System.exit(1);
+		} else if(args.length == 1 && !args[0].equals("show")){
+			System.out.println("Invalid argument: "+ args[0]);
+			System.exit(1);
+		} else if(args.length == 2 && !args[0].equals("item")){
+			System.out.println("Invalid argument: "+ args[0]);
+			System.exit(1);
+		} else if(args.length == 3 && !args[0].equals("bid")){
+			System.out.println("Invalid argument: "+ args[0]);
+			System.exit(1);
+		}
+		String request = String.join(" ", args);
+        client.connect(request);
 	}
 }
