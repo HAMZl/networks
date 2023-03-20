@@ -3,12 +3,14 @@ import java.net.*;
 
 public class Client 
 {
+	private static final int PORT = 6001;
+	private static final String LOCALHOST = "localhost";
 	// function to connect to surver with client request as an argument
 	public void connect(String request) {
 
         try {
 			// initialize socket with host name using port 6001
-            Socket s = new Socket( "localhost", 6001 );
+            Socket s = new Socket( LOCALHOST, PORT );
 			// initialize writer to write to server
 			PrintWriter writer = new PrintWriter(s.getOutputStream(), true);
 			// write request to server
@@ -25,6 +27,7 @@ public class Client
 				serverOutput = reader.readLine();
 			}
 			// close reader and server
+			writer.close();
             reader.close();
             s.close();
         }

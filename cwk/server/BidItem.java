@@ -14,26 +14,25 @@ public class BidItem {
     }
 
     public void setBidder(double bid, InetAddress inet){
-        this.bid = bid; // set bid to bid
-        this.bidder = inet.getHostAddress(); // set bidder with highest bid
+        this.bid = bid;
+        this.bidder = inet.getHostAddress();
     }
 
     public String getItemName(){
-        return this.name; // return item name
+        return this.name;
     }
 
     public double getBid(){
-        return this.bid; // return item bid
+        return this.bid;
     }
 
     public String getBidder(){
-        return this.bidder; // return current bidder
+        return this.bidder;
     }
 
     // override toString method
     @Override
     public String toString() {
-        // if there is a bidder for the item
         if(bidder != null){
             // string to display if there is a bidder
             return this.name + " : " + Double.toString(this.bid) + " : " + this.bidder;
