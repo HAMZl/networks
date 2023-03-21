@@ -3,14 +3,14 @@ import java.io.*;
 import java.util.*;
 import java.time.*;
 
-public class ClientHandler implements Runnable {
+public class ClientHandler extends Thread {
     private Socket sock;
-    private BufferedReader reader;
-    private InetAddress inet;
-    private PrintWriter writer;
+    private BufferedReader reader; // reader to read from client
+    private InetAddress inet; // address of client
+    private PrintWriter writer; // writer to write to client
 	// initialize array for arguments from client request
-	private String[] clientArguments = null;
-	// initialize array for to store all bid items
+	private String[] clientArguments;
+	// array of items available to bid
 	private ArrayList<BidItem> bidItems;
 	
     public ClientHandler(Socket sock, ArrayList<BidItem> bidItems){
@@ -28,6 +28,7 @@ public class ClientHandler implements Runnable {
 		return false; // item does not exist in list
 	}
 
+    // function to write client request to the log file
     public void writeToFile(String clientRequest){
         // get current date and time
         LocalDate localDate = LocalDate.now();
@@ -45,6 +46,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    // function that handles client request 'show'
     public void clientRequestShow(){
         if(bidItems.size() == 0){ // check if arrayList is of length 0
             writer.println("There are currently no items in this auction.");
@@ -54,6 +56,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    // function that handles client request 'item'
     public void clientRequestItem(){
         if (checkItemInList(clientArguments[1])){ // check if item already exists
             writer.println("Failure.");
@@ -63,6 +66,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    // function that handles client request 'bid'
     public void clientRequestBid(){
         // convert third argument of client request to double
 		double bid = Double.parseDouble(clientArguments[2]);
@@ -85,8 +89,7 @@ public class ClientHandler implements Runnable {
 		}
     }
 
-    @Override
-	public void run() {
+	public void run(){
         try
         {
             while(!sock.isClosed())
@@ -100,17 +103,21 @@ public class ClientHandler implements Runnable {
                 inet = sock.getInetAddress();
 				// writing to log file
                 writeToFile(clientRequest);
+                // initialize writer to write to the client
 				writer = new PrintWriter(sock.getOutputStream(), true);
+
 				if(clientArguments[0].equals("show")){
 					clientRequestShow();
-				} else if(clientArguments[0].equals("item")){ 
+				}
+
+                if(clientArguments[0].equals("item")){ 
 					clientRequestItem();
-				} else if(clientArguments[0].equals("bid")){
+				}
+
+                if(clientArguments[0].equals("bid")){
                     clientRequestBid();
 				}
-				else {
-					continue;
-				}
+
                 // close writer and socket
                 reader.close();
 				writer.close();

@@ -37,7 +37,7 @@ public class BidItem {
             // string to display if there is a bidder
             return this.name + " : " + Double.toString(this.bid) + " : " + this.bidder;
         } else {
-            // string to display if there is not a bidder for the item
+            // string to display if there is no bidder for the item
             return this.name + " : " + Double.toString(this.bid) + " : <no bids>";
         }
     }
